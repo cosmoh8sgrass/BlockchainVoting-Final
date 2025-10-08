@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6bc88b43b2640eb5ce6b6f5508c9bbad91959436ce77c0176664f6d3f06a399d
-size 929
+{
+  "name": "blockchain-voting-system",
+  "version": "1.0.0",
+  "description": "A secure, transparent, and tamper-proof voting system using blockchain technology",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm start",
+    "dev:server": "cd server && npm run dev",
+    "build": "cd client && npm run build",
+    "test": "cd contracts && npm test",
+    "deploy": "cd contracts && npm run deploy",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install && cd ../contracts && npm install"
+  },
+  "keywords": [
+    "blockchain",
+    "voting",
+    "ethereum",
+    "solidity",
+    "react",
+    "web3",
+    "ipfs",
+    "democracy",
+    "transparency"
+  ],
+  "author": "Blockchain Voting Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
