@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Ganache local blockchain
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    container_name: blockvote-ganache
+    ports:
+      - "7545:7545"
+    command: ganache-cli --host 0.0.0.0 --port 7545 --accounts 10 --defaultBalanceEther 100 --deterministic
+
+  # IPFS node
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    container_name: blockvote-ipfs
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ipfs_data:/data
+    environment:
+      - IPFS_PROFILE=server
+
+  # Backend server
+  server:
+    build: ./server
+    container_name: blockvote-server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - RPC_URL=http://ganache:7545
+      - IPFS_HOST=ipfs
+      - IPFS_PORT=5001
+    depends_on:
+      - ganache
+      - ipfs
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  # Frontend client
+  client:
+    build: ./client
+    container_name: blockvote-client
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_CONTRACT_ADDRESS=${CONTRACT_ADDRESS}
+      - REACT_APP_RPC_URL=http://localhost:7545
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - server
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+volumes:
+  ipfs_data:
